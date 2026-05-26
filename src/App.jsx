@@ -37,7 +37,7 @@ function App() {
         Exam Helper AI
       </h1>
 
-      {/* NOTES INPUT */}
+      {/* INPUT */}
       <textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
@@ -45,7 +45,7 @@ function App() {
         className="w-full max-w-2xl h-64 p-4 rounded-xl border"
       />
 
-      {/* GENERATE BUTTON */}
+      {/* BUTTON */}
       <button
         onClick={handleGenerate}
         className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-xl"
@@ -53,17 +53,14 @@ function App() {
         {loading ? "Generating..." : "Generate Questions"}
       </button>
 
-      {/* OUTPUT SECTION */}
+      {/* OUTPUT */}
       {output && (
         <div className="w-full max-w-2xl bg-white mt-8 p-6 rounded-xl whitespace-pre-wrap">
 
-          {/* ACTION BUTTONS */}
           <div className="flex gap-4 mb-4">
 
             <button
-              onClick={() =>
-                navigator.clipboard.writeText(output)
-              }
+              onClick={() => navigator.clipboard.writeText(output)}
               className="bg-green-600 text-white px-4 py-2 rounded-lg"
             >
               Copy Output
@@ -78,9 +75,7 @@ function App() {
 
           </div>
 
-          {/* OUTPUT TEXT */}
           {output}
-
         </div>
       )}
 
