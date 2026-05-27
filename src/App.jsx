@@ -1,83 +1,240 @@
 import { useState } from "react"
-import { generateQuestions } from "./gemini"
-import jsPDF from "jspdf"
 
 function App() {
+
   const [notes, setNotes] = useState("")
   const [output, setOutput] = useState("")
   const [loading, setLoading] = useState(false)
 
-  async function handleGenerate() {
-    setLoading(true)
+  // =====================================
+  // GENERATE QUESTIONS
+  // =====================================
+
+  async function generateQuestions() {
 
     try {
-      const result = await generateQuestions(notes)
-      setOutput(result)
+
+      setLoading(true)
+
+      const res = await fetch(
+        "http://localhost:5000/generate",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            notes
+          })
+        }
+      )
+
+      const data = await res.json()
+
+      setOutput(
+        data?.choices?.[0]?.message?.content
+        || "No response"
+      )
+
     } catch (error) {
+
       console.log(error)
-      setOutput("Error generating questions")
+
+      alert("Generation failed")
+
+    } finally {
+
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
-  function downloadPDF() {
-    const doc = new jsPDF()
+  // =====================================
+  // RAZORPAY PAYMENT
+  // =====================================
 
-    const splitText = doc.splitTextToSize(output, 180)
-    doc.text(splitText, 10, 10)
+  async function upgradeToPro() {
 
-    doc.save("exam-helper-ai.pdf")
+    try {
+
+      const res = await fetch(
+        "http://localhost:5000/create-order",
+        {
+          method: "POST"
+        }
+      )
+
+      const data = await res.json()
+
+      const options = {
+
+        key:
+          "rzp_test_SuROd3WnfUli1d",
+
+        amount:
+          data.amount,
+
+        currency:
+          data.currency,
+
+        name:
+          "Exam Helper AI",
+
+        description:
+          "Pro Plan",
+
+        order_id:
+          data.id,
+
+        handler: function (response) {
+
+          alert(
+            "Payment Successful 🚀"
+          )
+
+          console.log(response)
+        },
+
+        theme: {
+          color: "#7c3aed"
+        }
+      }
+
+      const razorpay =
+        new window.Razorpay(options)
+
+      razorpay.open()
+
+    } catch (error) {
+
+      console.log(error)
+
+      alert("Payment failed")
+    }
   }
+
+  // =====================================
+  // UI
+  // =====================================
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-10">
 
-      <h1 className="text-4xl font-bold mb-8">
-        Exam Helper AI
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "40px",
+        background: "#0f172a",
+        color: "white",
+        fontFamily: "Arial"
+      }}
+    >
+
+      <h1
+        style={{
+          fontSize: "42px",
+          marginBottom: "10px"
+        }}
+      >
+        Exam Helper AI 🚀
       </h1>
 
-      {/* INPUT */}
+      <p
+        style={{
+          marginBottom: "30px",
+          color: "#cbd5e1"
+        }}
+      >
+        Generate exam questions from notes
+      </p>
+
       <textarea
+        name="notes"
+        id="notes"
         value={notes}
-        onChange={(e) => setNotes(e.target.value)}
+        onChange={(e) =>
+          setNotes(e.target.value)
+        }
+
         placeholder="Paste your notes here..."
-        className="w-full max-w-2xl h-64 p-4 rounded-xl border"
+
+        style={{
+          width: "100%",
+          height: "220px",
+          padding: "20px",
+          borderRadius: "12px",
+          border: "none",
+          outline: "none",
+          fontSize: "16px",
+          marginBottom: "20px"
+        }}
       />
 
-      {/* BUTTON */}
-      <button
-        onClick={handleGenerate}
-        className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-xl"
+      <div
+        style={{
+          display: "flex",
+          gap: "15px",
+          marginBottom: "30px"
+        }}
       >
-        {loading ? "Generating..." : "Generate Questions"}
-      </button>
 
-      {/* OUTPUT */}
-      {output && (
-        <div className="w-full max-w-2xl bg-white mt-8 p-6 rounded-xl whitespace-pre-wrap">
+        <button
 
-          <div className="flex gap-4 mb-4">
+          onClick={generateQuestions}
 
-            <button
-              onClick={() => navigator.clipboard.writeText(output)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg"
-            >
-              Copy Output
-            </button>
+          style={{
+            padding: "14px 24px",
+            borderRadius: "10px",
+            border: "none",
+            background: "#7c3aed",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "16px"
+          }}
+        >
 
-            <button
-              onClick={downloadPDF}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg"
-            >
-              Download PDF
-            </button>
+          {
+            loading
+              ? "Generating..."
+              : "Generate Questions"
+          }
 
-          </div>
+        </button>
 
-          {output}
-        </div>
-      )}
+        <button
+
+          onClick={upgradeToPro}
+
+          style={{
+            padding: "14px 24px",
+            borderRadius: "10px",
+            border: "none",
+            background: "#16a34a",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "16px"
+          }}
+        >
+
+          Upgrade to Pro 🚀
+
+        </button>
+
+      </div>
+
+      <div
+        style={{
+          background: "#1e293b",
+          padding: "25px",
+          borderRadius: "12px",
+          whiteSpace: "pre-wrap",
+          lineHeight: "1.7"
+        }}
+      >
+
+        {output}
+
+      </div>
 
     </div>
   )
