@@ -6,10 +6,9 @@ function App() {
   const [output, setOutput] = useState("")
   const [loading, setLoading] = useState(false)
 
-  // =====================================
-  // GENERATE QUESTIONS
-  // =====================================
-
+  // =========================
+  // AI GENERATION
+  // =========================
   async function generateQuestions() {
 
     try {
@@ -17,49 +16,42 @@ function App() {
       setLoading(true)
 
       const res = await fetch(
-        "http://localhost:5000/generate",
+        "https://exam-helper-ai-1.onrender.com/generate",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json"
           },
-
-          body: JSON.stringify({
-            notes
-          })
+          body: JSON.stringify({ notes })
         }
       )
 
       const data = await res.json()
 
       setOutput(
-        data?.choices?.[0]?.message?.content
-        || "No response"
+        data?.choices?.[0]?.message?.content ||
+        "No response"
       )
 
     } catch (error) {
 
       console.log(error)
-
       alert("Generation failed")
 
     } finally {
-
       setLoading(false)
     }
   }
 
-  // =====================================
-  // RAZORPAY PAYMENT
-  // =====================================
-
+  // =========================
+  // UPGRADE TO PRO (RAZORPAY)
+  // =========================
   async function upgradeToPro() {
 
     try {
 
       const res = await fetch(
-        "http://localhost:5000/create-order",
+        "https://exam-helper-ai-1.onrender.com/create-order",
         {
           method: "POST"
         }
@@ -69,30 +61,16 @@ function App() {
 
       const options = {
 
-        key:
-          "rzp_test_SuROd3WnfUli1d",
+        key: "YOUR_RAZORPAY_KEY_ID",
 
-        amount:
-          data.amount,
-
-        currency:
-          data.currency,
-
-        name:
-          "Exam Helper AI",
-
-        description:
-          "Pro Plan",
-
-        order_id:
-          data.id,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Exam Helper AI",
+        description: "Pro Plan",
+        order_id: data.id,
 
         handler: function (response) {
-
-          alert(
-            "Payment Successful 🚀"
-          )
-
+          alert("Payment Successful 🚀")
           console.log(response)
         },
 
@@ -109,132 +87,46 @@ function App() {
     } catch (error) {
 
       console.log(error)
-
       alert("Payment failed")
     }
   }
 
-  // =====================================
-  // UI
-  // =====================================
-
   return (
 
-    <div
-      style={{
-        minHeight: "100vh",
-        padding: "40px",
-        background: "#0f172a",
-        color: "white",
-        fontFamily: "Arial"
-      }}
-    >
+    <div style={{
+      minHeight: "100vh",
+      padding: "40px",
+      background: "#0f172a",
+      color: "white",
+      fontFamily: "Arial"
+    }}>
 
-      <h1
-        style={{
-          fontSize: "42px",
-          marginBottom: "10px"
-        }}
-      >
-        Exam Helper AI 🚀
-      </h1>
-
-      <p
-        style={{
-          marginBottom: "30px",
-          color: "#cbd5e1"
-        }}
-      >
-        Generate exam questions from notes
-      </p>
+      <h1>Exam Helper AI 🚀</h1>
 
       <textarea
-        name="notes"
-        id="notes"
         value={notes}
-        onChange={(e) =>
-          setNotes(e.target.value)
-        }
-
-        placeholder="Paste your notes here..."
-
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder="Enter your notes..."
         style={{
           width: "100%",
-          height: "220px",
-          padding: "20px",
-          borderRadius: "12px",
-          border: "none",
-          outline: "none",
-          fontSize: "16px",
-          marginBottom: "20px"
+          height: "200px",
+          marginTop: "20px"
         }}
       />
 
-      <div
-        style={{
-          display: "flex",
-          gap: "15px",
-          marginBottom: "30px"
-        }}
-      >
+      <br />
 
-        <button
+      <button onClick={generateQuestions}>
+        {loading ? "Generating..." : "Generate"}
+      </button>
 
-          onClick={generateQuestions}
+      <button onClick={upgradeToPro}>
+        Upgrade to Pro 🚀
+      </button>
 
-          style={{
-            padding: "14px 24px",
-            borderRadius: "10px",
-            border: "none",
-            background: "#7c3aed",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "16px"
-          }}
-        >
-
-          {
-            loading
-              ? "Generating..."
-              : "Generate Questions"
-          }
-
-        </button>
-
-        <button
-
-          onClick={upgradeToPro}
-
-          style={{
-            padding: "14px 24px",
-            borderRadius: "10px",
-            border: "none",
-            background: "#16a34a",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "16px"
-          }}
-        >
-
-          Upgrade to Pro 🚀
-
-        </button>
-
-      </div>
-
-      <div
-        style={{
-          background: "#1e293b",
-          padding: "25px",
-          borderRadius: "12px",
-          whiteSpace: "pre-wrap",
-          lineHeight: "1.7"
-        }}
-      >
-
+      <pre style={{ marginTop: "20px" }}>
         {output}
-
-      </div>
+      </pre>
 
     </div>
   )
