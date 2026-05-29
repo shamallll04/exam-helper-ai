@@ -79,7 +79,7 @@ function App() {
       const options = {
 
         // REPLACE WITH YOUR REAL KEY
-        key: "rzp_test_xxxxxxxxx",
+        key: "rzp_test_SvDBRnjMycTk4g",
 
         amount: order.amount,
 
