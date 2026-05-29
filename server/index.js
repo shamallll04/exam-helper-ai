@@ -14,48 +14,71 @@ app.use(express.json())
 // =====================================
 // HEALTH CHECK
 // =====================================
+
 app.get("/", (req, res) => {
   res.send("Server is LIVE 🚀")
 })
 
 // =====================================
-// RAZORPAY INIT
+// RAZORPAY
 // =====================================
+
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET
 })
 
 // =====================================
-// AI GENERATION ROUTE
+// AI ROUTE
 // =====================================
+
 app.post("/generate", async (req, res) => {
+
   try {
-    const { notes } = req.body
+
+    const {
+      notes,
+      language
+    } = req.body
 
     if (!notes) {
-      return res.status(400).json({ error: "Notes are required" })
+
+      return res.status(400).json({
+        error: "Notes required"
+      })
     }
 
     const response = await axios.post(
+
       "https://openrouter.ai/api/v1/chat/completions",
+
       {
         model: "openai/gpt-4o-mini",
+
         messages: [
           {
             role: "user",
-            content: `Generate exam questions from these notes:\n\n${notes}`
+
+            content:
+              `Explain these study notes in very simple ${language} language for students to easily understand.\n\n${notes}`
           }
         ]
       },
+
       {
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
 
-          // important for OpenRouter
-          "HTTP-Referer": "http://localhost:5173",
-          "X-Title": "Exam Helper AI"
+          Authorization:
+            `Bearer ${process.env.OPENROUTER_API_KEY}`,
+
+          "Content-Type":
+            "application/json",
+
+          "HTTP-Referer":
+            "https://exam-helper-ai-1.vercel.app",
+
+          "X-Title":
+            "StudyEasy AI"
         }
       }
     )
@@ -63,8 +86,8 @@ app.post("/generate", async (req, res) => {
     res.json(response.data)
 
   } catch (error) {
+
     console.log(
-      "AI ERROR:",
       error?.response?.data || error.message
     )
 
@@ -75,22 +98,32 @@ app.post("/generate", async (req, res) => {
 })
 
 // =====================================
-// RAZORPAY ORDER ROUTE
+// RAZORPAY ORDER
 // =====================================
+
 app.post("/create-order", async (req, res) => {
+
   try {
+
     const options = {
-      amount: 99900, // ₹999
+
+      amount: 99900,
+
       currency: "INR",
+
       receipt: "receipt_order_1"
     }
 
-    const order = await razorpay.orders.create(options)
+    const order =
+      await razorpay.orders.create(
+        options
+      )
 
     res.json(order)
 
   } catch (error) {
-    console.log("PAYMENT ERROR:", error.message)
+
+    console.log(error)
 
     res.status(500).json({
       error: error.message
@@ -101,8 +134,13 @@ app.post("/create-order", async (req, res) => {
 // =====================================
 // START SERVER
 // =====================================
-const PORT = process.env.PORT || 5000
+
+const PORT =
+  process.env.PORT || 5000
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+
+  console.log(
+    `Server running on port ${PORT}`
+  )
 })

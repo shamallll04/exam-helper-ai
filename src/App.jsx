@@ -6,18 +6,23 @@ function App() {
   const [output, setOutput] = useState("")
   const [loading, setLoading] = useState(false)
 
+  const [language, setLanguage] =
+    useState("Malayalam")
+
   // =====================================
-  // AI GENERATION
+  // GENERATE SIMPLE NOTES
   // =====================================
 
-  async function generateQuestions() {
+  async function generateExplanation() {
 
     try {
 
       setLoading(true)
 
       const res = await fetch(
+
         "https://exam-helper-ai-1.onrender.com/generate",
+
         {
           method: "POST",
 
@@ -26,7 +31,8 @@ function App() {
           },
 
           body: JSON.stringify({
-            notes
+            notes,
+            language
           })
         }
       )
@@ -51,7 +57,7 @@ function App() {
   }
 
   // =====================================
-  // RAZORPAY PAYMENT
+  // RAZORPAY
   // =====================================
 
   async function upgradeToPro() {
@@ -59,52 +65,44 @@ function App() {
     try {
 
       const response = await fetch(
+
         "https://exam-helper-ai-1.onrender.com/create-order",
+
         {
           method: "POST"
         }
       )
 
-      const order = await response.json()
-
-      console.log(order)
+      const order =
+        await response.json()
 
       if (!order.id) {
 
-        alert("Order creation failed")
+        alert("Order failed")
 
         return
       }
 
       const options = {
 
-        // REPLACE WITH YOUR REAL KEY
         key: "rzp_test_SvDBRnjMycTk4g",
 
         amount: order.amount,
 
         currency: order.currency,
 
-        name: "Exam Helper AI",
+        name: "StudyEasy AI",
 
-        description: "Pro Upgrade",
+        description:
+          "Pro Upgrade",
 
         order_id: order.id,
 
-        handler: function (response) {
+        handler: function () {
 
-          alert("Payment Successful 🚀")
-
-          console.log(response)
-        },
-
-        prefill: {
-
-          name: "User",
-
-          email: "user@example.com",
-
-          contact: "9999999999"
+          alert(
+            "Payment Successful 🚀"
+          )
         },
 
         theme: {
@@ -112,7 +110,8 @@ function App() {
         }
       }
 
-      const razorpay = new window.Razorpay(options)
+      const razorpay =
+        new window.Razorpay(options)
 
       razorpay.open()
 
@@ -132,9 +131,11 @@ function App() {
 
       <div className="nav">
 
-        <h2>Exam Helper AI 🚀</h2>
+        <h2>StudyEasy AI 🚀</h2>
 
-        <button onClick={upgradeToPro}>
+        <button
+          onClick={upgradeToPro}
+        >
           Upgrade Pro
         </button>
 
@@ -144,43 +145,99 @@ function App() {
 
       <div className="container">
 
-        {/* LEFT */}
+        {/* INPUT */}
 
         <div className="card">
 
-          <h1>AI Study Assistant</h1>
+          <h1>
+            AI Study Simplifier
+          </h1>
 
           <p>
-            Generate exam questions instantly from your notes.
+            Convert difficult study
+            notes into easy mother
+            tongue explanations.
           </p>
 
-          <textarea
-            name="notes"
-            id="notes"
-            placeholder="Paste your notes here..."
-            value={notes}
+          {/* LANGUAGE */}
+
+          <select
+            value={language}
+
             onChange={(e) =>
-              setNotes(e.target.value)
+              setLanguage(
+                e.target.value
+              )
+            }
+          >
+
+            <option>
+              Malayalam
+            </option>
+
+            <option>
+              Hindi
+            </option>
+
+            <option>
+              Tamil
+            </option>
+
+            <option>
+              Kannada
+            </option>
+
+            <option>
+              English
+            </option>
+
+          </select>
+
+          {/* NOTES */}
+
+          <textarea
+
+            id="notes"
+
+            name="notes"
+
+            placeholder=
+              "Paste your notes here..."
+
+            value={notes}
+
+            onChange={(e) =>
+              setNotes(
+                e.target.value
+              )
             }
           />
 
-          <button onClick={generateQuestions}>
+          {/* BUTTON */}
+
+          <button
+            onClick={
+              generateExplanation
+            }
+          >
 
             {
               loading
                 ? "Generating..."
-                : "Generate Questions"
+                : "Simplify Notes"
             }
 
           </button>
 
         </div>
 
-        {/* RIGHT */}
+        {/* OUTPUT */}
 
         <div className="card output">
 
-          <h2>Generated Output</h2>
+          <h2>
+            Simplified Notes
+          </h2>
 
           <pre>{output}</pre>
 
