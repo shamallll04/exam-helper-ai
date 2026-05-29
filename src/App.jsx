@@ -116,9 +116,9 @@ function App() {
     <div
       style={{
         fontFamily: "Arial",
-        background:
-          "#f4f7ff",
-        minHeight: "100vh"
+        background: "#eef2ff",
+        minHeight: "100vh",
+        color: "#111827"
       }}
     >
 
@@ -126,18 +126,19 @@ function App() {
 
       <div
         style={{
-          padding: "60px 20px",
+          padding: "80px 20px",
           textAlign: "center",
           background:
-            "linear-gradient(to right,#6366f1,#8b5cf6)",
+            "linear-gradient(to right,#4f46e5,#7c3aed)",
           color: "white"
         }}
       >
 
         <h1
           style={{
-            fontSize: "50px",
-            marginBottom: "20px"
+            fontSize: "60px",
+            marginBottom: "20px",
+            fontWeight: "bold"
           }}
         >
           StudyEasy AI 🚀
@@ -145,9 +146,10 @@ function App() {
 
         <p
           style={{
-            fontSize: "22px",
+            fontSize: "24px",
             maxWidth: "700px",
-            margin: "auto"
+            margin: "auto",
+            lineHeight: "1.6"
           }}
         >
           AI-powered study explanations
@@ -160,14 +162,16 @@ function App() {
 
       <div
         style={{
-          padding: "50px 20px"
+          padding: "70px 20px"
         }}
       >
 
         <h2
           style={{
             textAlign: "center",
-            marginBottom: "40px"
+            marginBottom: "50px",
+            color: "#111827",
+            fontSize: "42px"
           }}
         >
           Features
@@ -178,7 +182,7 @@ function App() {
             display: "grid",
             gridTemplateColumns:
               "repeat(auto-fit,minmax(250px,1fr))",
-            gap: "20px"
+            gap: "25px"
           }}
         >
 
@@ -189,7 +193,7 @@ function App() {
 
             <p>
               Understand difficult
-              topics easily.
+              topics easily with AI.
             </p>
           </div>
 
@@ -228,7 +232,13 @@ function App() {
         }}
       >
 
-        <h2>
+        <h2
+          style={{
+            color: "#111827",
+            fontSize: "42px",
+            marginBottom: "25px"
+          }}
+        >
           Generate Explanation
         </h2>
 
@@ -243,11 +253,13 @@ function App() {
 
           style={{
             width: "100%",
-            padding: "15px",
-            borderRadius: "10px",
+            padding: "18px",
+            borderRadius: "14px",
             border:
-              "1px solid #ccc",
-            marginTop: "20px"
+              "1px solid #cbd5e1",
+            fontSize: "16px",
+            outline: "none",
+            boxSizing: "border-box"
           }}
         />
 
@@ -276,7 +288,11 @@ function App() {
                 Output
               </h3>
 
-              <p>
+              <p
+                style={{
+                  lineHeight: "1.8"
+                }}
+              >
                 {result}
               </p>
 
@@ -290,18 +306,23 @@ function App() {
 
       <div
         style={{
-          padding: "50px 20px",
+          padding: "70px 20px",
           textAlign: "center"
         }}
       >
 
-        <h2>
+        <h2
+          style={{
+            color: "#111827",
+            fontSize: "42px"
+          }}
+        >
           Pricing
         </h2>
 
         <div
           style={{
-            marginTop: "30px",
+            marginTop: "40px",
             display: "flex",
             justifyContent: "center"
           }}
@@ -313,7 +334,11 @@ function App() {
               Pro Plan
             </h3>
 
-            <h1>
+            <h1
+              style={{
+                color: "#4f46e5"
+              }}
+            >
               ₹99/month
             </h1>
 
@@ -349,7 +374,7 @@ function App() {
           background: "#111827",
           color: "white",
           textAlign: "center",
-          padding: "30px"
+          padding: "40px"
         }}
       >
 
@@ -379,60 +404,66 @@ const cardStyle = {
 
   background: "white",
 
-  padding: "30px",
+  padding: "35px",
 
-  borderRadius: "15px",
+  borderRadius: "18px",
 
   boxShadow:
-    "0 4px 10px rgba(0,0,0,0.1)"
+    "0 6px 15px rgba(0,0,0,0.08)",
+
+  color: "#111827",
+
+  transition: "0.3s"
 }
 
 const buttonStyle = {
 
-  marginTop: "20px",
+  marginTop: "25px",
 
-  background: "#6366f1",
+  background: "#4f46e5",
 
   color: "white",
 
   border: "none",
 
   padding:
-    "15px 30px",
+    "15px 35px",
 
-  borderRadius: "10px",
+  borderRadius: "12px",
 
   cursor: "pointer",
 
-  fontSize: "16px"
+  fontSize: "16px",
+
+  fontWeight: "bold"
 }
 
 const resultStyle = {
 
   background: "white",
 
-  padding: "20px",
+  padding: "25px",
 
-  borderRadius: "10px",
+  borderRadius: "15px",
 
-  marginTop: "30px",
+  marginTop: "35px",
 
   boxShadow:
-    "0 4px 10px rgba(0,0,0,0.1)"
+    "0 6px 15px rgba(0,0,0,0.08)"
 }
 
 const priceCard = {
 
   background: "white",
 
-  padding: "40px",
+  padding: "45px",
 
-  borderRadius: "20px",
+  borderRadius: "22px",
 
   boxShadow:
-    "0 4px 10px rgba(0,0,0,0.1)",
+    "0 6px 15px rgba(0,0,0,0.08)",
 
-  width: "300px"
+  width: "320px"
 }
 
 export default App
