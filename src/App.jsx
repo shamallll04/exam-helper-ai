@@ -6,9 +6,10 @@ function App() {
   const [output, setOutput] = useState("")
   const [loading, setLoading] = useState(false)
 
-  // =========================
+  // =====================================
   // AI GENERATION
-  // =========================
+  // =====================================
+
   async function generateQuestions() {
 
     try {
@@ -19,10 +20,14 @@ function App() {
         "https://exam-helper-ai-1.onrender.com/generate",
         {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ notes })
+
+          body: JSON.stringify({
+            notes
+          })
         }
       )
 
@@ -36,97 +41,152 @@ function App() {
     } catch (error) {
 
       console.log(error)
+
       alert("Generation failed")
 
     } finally {
+
       setLoading(false)
     }
   }
 
-  // =========================
-  // UPGRADE TO PRO (RAZORPAY)
-  // =========================
+  // =====================================
+  // RAZORPAY PAYMENT
+  // =====================================
+
   async function upgradeToPro() {
 
     try {
 
-      const res = await fetch(
+      const response = await fetch(
         "https://exam-helper-ai-1.onrender.com/create-order",
         {
           method: "POST"
         }
       )
 
-      const data = await res.json()
+      const order = await response.json()
+
+      console.log(order)
+
+      if (!order.id) {
+
+        alert("Order creation failed")
+
+        return
+      }
 
       const options = {
 
-        key: "YOUR_RAZORPAY_KEY_ID",
+        // REPLACE WITH YOUR REAL KEY
+        key: "rzp_test_xxxxxxxxx",
 
-        amount: data.amount,
-        currency: data.currency,
+        amount: order.amount,
+
+        currency: order.currency,
+
         name: "Exam Helper AI",
-        description: "Pro Plan",
-        order_id: data.id,
+
+        description: "Pro Upgrade",
+
+        order_id: order.id,
 
         handler: function (response) {
+
           alert("Payment Successful 🚀")
+
           console.log(response)
         },
 
+        prefill: {
+
+          name: "User",
+
+          email: "user@example.com",
+
+          contact: "9999999999"
+        },
+
         theme: {
-          color: "#7c3aed"
+          color: "#6366f1"
         }
       }
 
-      const razorpay =
-        new window.Razorpay(options)
+      const razorpay = new window.Razorpay(options)
 
       razorpay.open()
 
     } catch (error) {
 
       console.log(error)
+
       alert("Payment failed")
     }
   }
 
   return (
 
-    <div style={{
-      minHeight: "100vh",
-      padding: "40px",
-      background: "#0f172a",
-      color: "white",
-      fontFamily: "Arial"
-    }}>
+    <div className="app">
 
-      <h1>Exam Helper AI 🚀</h1>
+      {/* NAVBAR */}
 
-      <textarea
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-        placeholder="Enter your notes..."
-        style={{
-          width: "100%",
-          height: "200px",
-          marginTop: "20px"
-        }}
-      />
+      <div className="nav">
 
-      <br />
+        <h2>Exam Helper AI 🚀</h2>
 
-      <button onClick={generateQuestions}>
-        {loading ? "Generating..." : "Generate"}
-      </button>
+        <button onClick={upgradeToPro}>
+          Upgrade Pro
+        </button>
 
-      <button onClick={upgradeToPro}>
-        Upgrade to Pro 🚀
-      </button>
+      </div>
 
-      <pre style={{ marginTop: "20px" }}>
-        {output}
-      </pre>
+      {/* MAIN */}
+
+      <div className="container">
+
+        {/* LEFT */}
+
+        <div className="card">
+
+          <h1>AI Study Assistant</h1>
+
+          <p>
+            Generate exam questions instantly from your notes.
+          </p>
+
+          <textarea
+            name="notes"
+            id="notes"
+            placeholder="Paste your notes here..."
+            value={notes}
+            onChange={(e) =>
+              setNotes(e.target.value)
+            }
+          />
+
+          <button onClick={generateQuestions}>
+
+            {
+              loading
+                ? "Generating..."
+                : "Generate Questions"
+            }
+
+          </button>
+
+        </div>
+
+        {/* RIGHT */}
+
+        <div className="card output">
+
+          <h2>Generated Output</h2>
+
+          <pre>{output}</pre>
+
+        </div>
+
+      </div>
 
     </div>
   )
