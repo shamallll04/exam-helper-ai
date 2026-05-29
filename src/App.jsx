@@ -3,26 +3,26 @@ import { useState } from "react"
 function App() {
 
   const [notes, setNotes] = useState("")
-  const [output, setOutput] = useState("")
+  const [result, setResult] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const [language, setLanguage] =
-    useState("Malayalam")
-
   // =====================================
-  // GENERATE SIMPLE NOTES
+  // AI GENERATE
   // =====================================
 
-  async function generateExplanation() {
+  const generateNotes = async () => {
+
+    if (!notes) {
+      alert("Please enter notes")
+      return
+    }
 
     try {
 
       setLoading(true)
 
-      const res = await fetch(
-
+      const response = await fetch(
         "https://exam-helper-ai-1.onrender.com/generate",
-
         {
           method: "POST",
 
@@ -31,18 +31,18 @@ function App() {
           },
 
           body: JSON.stringify({
-            notes,
-            language
+            notes
           })
         }
       )
 
-      const data = await res.json()
+      const data = await response.json()
 
-      setOutput(
-        data?.choices?.[0]?.message?.content ||
-        "No response"
+      setResult(
+        data.choices?.[0]?.message?.content
       )
+
+      setLoading(false)
 
     } catch (error) {
 
@@ -50,38 +50,26 @@ function App() {
 
       alert("Generation failed")
 
-    } finally {
-
       setLoading(false)
     }
   }
 
   // =====================================
-  // RAZORPAY
+  // PAYMENT
   // =====================================
 
-  async function upgradeToPro() {
+  const handlePayment = async () => {
 
     try {
 
       const response = await fetch(
-
         "https://exam-helper-ai-1.onrender.com/create-order",
-
         {
           method: "POST"
         }
       )
 
-      const order =
-        await response.json()
-
-      if (!order.id) {
-
-        alert("Order failed")
-
-        return
-      }
+      const order = await response.json()
 
       const options = {
 
@@ -94,14 +82,14 @@ function App() {
         name: "StudyEasy AI",
 
         description:
-          "Pro Upgrade",
+          "Upgrade to Pro",
 
         order_id: order.id,
 
         handler: function () {
 
           alert(
-            "Payment Successful 🚀"
+            "Payment Successful!"
           )
         },
 
@@ -110,10 +98,10 @@ function App() {
         }
       }
 
-      const razorpay =
+      const rzp =
         new window.Razorpay(options)
 
-      razorpay.open()
+      rzp.open()
 
     } catch (error) {
 
@@ -125,128 +113,326 @@ function App() {
 
   return (
 
-    <div className="app">
+    <div
+      style={{
+        fontFamily: "Arial",
+        background:
+          "#f4f7ff",
+        minHeight: "100vh"
+      }}
+    >
 
-      {/* NAVBAR */}
+      {/* HERO */}
 
-      <div className="nav">
+      <div
+        style={{
+          padding: "60px 20px",
+          textAlign: "center",
+          background:
+            "linear-gradient(to right,#6366f1,#8b5cf6)",
+          color: "white"
+        }}
+      >
 
-        <h2>StudyEasy AI 🚀</h2>
-
-        <button
-          onClick={upgradeToPro}
+        <h1
+          style={{
+            fontSize: "50px",
+            marginBottom: "20px"
+          }}
         >
-          Upgrade Pro
-        </button>
+          StudyEasy AI 🚀
+        </h1>
+
+        <p
+          style={{
+            fontSize: "22px",
+            maxWidth: "700px",
+            margin: "auto"
+          }}
+        >
+          AI-powered study explanations
+          in your own language.
+        </p>
 
       </div>
 
-      {/* MAIN */}
+      {/* FEATURES */}
 
-      <div className="container">
+      <div
+        style={{
+          padding: "50px 20px"
+        }}
+      >
 
-        {/* INPUT */}
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "40px"
+          }}
+        >
+          Features
+        </h2>
 
-        <div className="card">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(250px,1fr))",
+            gap: "20px"
+          }}
+        >
 
-          <h1>
-            AI Study Simplifier
-          </h1>
+          <div style={cardStyle}>
+            <h3>
+              📘 Simple Explanations
+            </h3>
 
-          <p>
-            Convert difficult study
-            notes into easy mother
-            tongue explanations.
-          </p>
+            <p>
+              Understand difficult
+              topics easily.
+            </p>
+          </div>
 
-          {/* LANGUAGE */}
+          <div style={cardStyle}>
+            <h3>
+              🌍 Mother Tongue Support
+            </h3>
 
-          <select
-            value={language}
+            <p>
+              Learn in Malayalam,
+              Hindi, Tamil and more.
+            </p>
+          </div>
 
-            onChange={(e) =>
-              setLanguage(
-                e.target.value
-              )
-            }
-          >
+          <div style={cardStyle}>
+            <h3>
+              ⚡ AI Powered
+            </h3>
 
-            <option>
-              Malayalam
-            </option>
+            <p>
+              Fast intelligent
+              explanations instantly.
+            </p>
+          </div>
 
-            <option>
-              Hindi
-            </option>
+        </div>
+      </div>
 
-            <option>
-              Tamil
-            </option>
+      {/* GENERATOR */}
 
-            <option>
-              Kannada
-            </option>
+      <div
+        style={{
+          padding: "20px",
+          maxWidth: "900px",
+          margin: "auto"
+        }}
+      >
 
-            <option>
-              English
-            </option>
+        <h2>
+          Generate Explanation
+        </h2>
 
-          </select>
+        <textarea
+          rows="10"
+          value={notes}
+          onChange={(e) =>
+            setNotes(e.target.value)
+          }
 
-          {/* NOTES */}
+          placeholder="Paste your notes here..."
 
-          <textarea
+          style={{
+            width: "100%",
+            padding: "15px",
+            borderRadius: "10px",
+            border:
+              "1px solid #ccc",
+            marginTop: "20px"
+          }}
+        />
 
-            id="notes"
+        <button
 
-            name="notes"
+          onClick={generateNotes}
 
-            placeholder=
-              "Paste your notes here..."
+          style={buttonStyle}
+        >
 
-            value={notes}
+          {
+            loading
+              ? "Generating..."
+              : "Generate"
+          }
 
-            onChange={(e) =>
-              setNotes(
-                e.target.value
-              )
-            }
-          />
+        </button>
 
-          {/* BUTTON */}
+        {
 
-          <button
-            onClick={
-              generateExplanation
-            }
-          >
+          result && (
 
-            {
-              loading
-                ? "Generating..."
-                : "Simplify Notes"
-            }
+            <div style={resultStyle}>
 
-          </button>
+              <h3>
+                Output
+              </h3>
+
+              <p>
+                {result}
+              </p>
+
+            </div>
+          )
+        }
+
+      </div>
+
+      {/* PRICING */}
+
+      <div
+        style={{
+          padding: "50px 20px",
+          textAlign: "center"
+        }}
+      >
+
+        <h2>
+          Pricing
+        </h2>
+
+        <div
+          style={{
+            marginTop: "30px",
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
+
+          <div style={priceCard}>
+
+            <h3>
+              Pro Plan
+            </h3>
+
+            <h1>
+              ₹99/month
+            </h1>
+
+            <p>
+              Unlimited explanations
+            </p>
+
+            <p>
+              Faster AI responses
+            </p>
+
+            <p>
+              Better quality outputs
+            </p>
+
+            <button
+              onClick={handlePayment}
+              style={buttonStyle}
+            >
+              Upgrade Now
+            </button>
+
+          </div>
 
         </div>
 
-        {/* OUTPUT */}
+      </div>
 
-        <div className="card output">
+      {/* FOOTER */}
 
-          <h2>
-            Simplified Notes
-          </h2>
+      <div
+        style={{
+          background: "#111827",
+          color: "white",
+          textAlign: "center",
+          padding: "30px"
+        }}
+      >
 
-          <pre>{output}</pre>
+        <h3>
+          StudyEasy AI
+        </h3>
 
-        </div>
+        <p>
+          support@studyeasyai.com
+        </p>
+
+        <p>
+          © 2026 StudyEasy AI
+        </p>
 
       </div>
 
     </div>
   )
+}
+
+// =====================================
+// STYLES
+// =====================================
+
+const cardStyle = {
+
+  background: "white",
+
+  padding: "30px",
+
+  borderRadius: "15px",
+
+  boxShadow:
+    "0 4px 10px rgba(0,0,0,0.1)"
+}
+
+const buttonStyle = {
+
+  marginTop: "20px",
+
+  background: "#6366f1",
+
+  color: "white",
+
+  border: "none",
+
+  padding:
+    "15px 30px",
+
+  borderRadius: "10px",
+
+  cursor: "pointer",
+
+  fontSize: "16px"
+}
+
+const resultStyle = {
+
+  background: "white",
+
+  padding: "20px",
+
+  borderRadius: "10px",
+
+  marginTop: "30px",
+
+  boxShadow:
+    "0 4px 10px rgba(0,0,0,0.1)"
+}
+
+const priceCard = {
+
+  background: "white",
+
+  padding: "40px",
+
+  borderRadius: "20px",
+
+  boxShadow:
+    "0 4px 10px rgba(0,0,0,0.1)",
+
+  width: "300px"
 }
 
 export default App
