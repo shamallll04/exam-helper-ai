@@ -6,6 +6,9 @@ function App() {
   const [result, setResult] = useState("")
   const [loading, setLoading] = useState(false)
 
+  const [language, setLanguage] =
+    useState("Malayalam")
+
   // =====================================
   // AI GENERATE
   // =====================================
@@ -13,7 +16,9 @@ function App() {
   const generateNotes = async () => {
 
     if (!notes) {
+
       alert("Please enter notes")
+
       return
     }
 
@@ -22,16 +27,24 @@ function App() {
       setLoading(true)
 
       const response = await fetch(
+
         "https://exam-helper-ai-1.onrender.com/generate",
+
         {
+
           method: "POST",
 
           headers: {
-            "Content-Type": "application/json"
+
+            "Content-Type":
+              "application/json"
           },
 
           body: JSON.stringify({
-            notes
+
+            notes,
+
+            language
           })
         }
       )
@@ -39,6 +52,7 @@ function App() {
       const data = await response.json()
 
       setResult(
+
         data.choices?.[0]?.message?.content
       )
 
@@ -63,13 +77,16 @@ function App() {
     try {
 
       const response = await fetch(
+
         "https://exam-helper-ai-1.onrender.com/create-order",
+
         {
           method: "POST"
         }
       )
 
-      const order = await response.json()
+      const order =
+        await response.json()
 
       const options = {
 
@@ -94,7 +111,7 @@ function App() {
         },
 
         theme: {
-          color: "#6366f1"
+          color: "#4f46e5"
         }
       }
 
@@ -114,10 +131,15 @@ function App() {
   return (
 
     <div
+
       style={{
+
         fontFamily: "Arial",
+
         background: "#eef2ff",
+
         minHeight: "100vh",
+
         color: "#111827"
       }}
     >
@@ -125,35 +147,53 @@ function App() {
       {/* HERO */}
 
       <div
+
         style={{
+
           padding: "80px 20px",
+
           textAlign: "center",
+
           background:
             "linear-gradient(to right,#4f46e5,#7c3aed)",
+
           color: "white"
         }}
       >
 
         <h1
+
           style={{
+
             fontSize: "60px",
+
             marginBottom: "20px",
+
             fontWeight: "bold"
           }}
         >
+
           StudyEasy AI 🚀
+
         </h1>
 
         <p
+
           style={{
+
             fontSize: "24px",
+
             maxWidth: "700px",
+
             margin: "auto",
+
             lineHeight: "1.6"
           }}
         >
+
           AI-powered study explanations
           in your own language.
+
         </p>
 
       </div>
@@ -161,32 +201,45 @@ function App() {
       {/* FEATURES */}
 
       <div
+
         style={{
           padding: "70px 20px"
         }}
       >
 
         <h2
+
           style={{
+
             textAlign: "center",
+
             marginBottom: "50px",
+
             color: "#111827",
+
             fontSize: "42px"
           }}
         >
+
           Features
+
         </h2>
 
         <div
+
           style={{
+
             display: "grid",
+
             gridTemplateColumns:
               "repeat(auto-fit,minmax(250px,1fr))",
+
             gap: "25px"
           }}
         >
 
           <div style={cardStyle}>
+
             <h3>
               📘 Simple Explanations
             </h3>
@@ -195,9 +248,11 @@ function App() {
               Understand difficult
               topics easily with AI.
             </p>
+
           </div>
 
           <div style={cardStyle}>
+
             <h3>
               🌍 Mother Tongue Support
             </h3>
@@ -206,9 +261,11 @@ function App() {
               Learn in Malayalam,
               Hindi, Tamil and more.
             </p>
+
           </div>
 
           <div style={cardStyle}>
+
             <h3>
               ⚡ AI Powered
             </h3>
@@ -217,51 +274,142 @@ function App() {
               Fast intelligent
               explanations instantly.
             </p>
+
           </div>
 
         </div>
+
       </div>
 
       {/* GENERATOR */}
 
       <div
+
         style={{
+
           padding: "20px",
+
           maxWidth: "900px",
-          margin: "auto"
+
+          margin: "auto",
+
+          position: "relative",
+
+          zIndex: 9999
         }}
       >
 
         <h2
+
           style={{
+
             color: "#111827",
+
             fontSize: "42px",
+
             marginBottom: "25px"
           }}
         >
+
           Generate Explanation
+
         </h2>
 
+        {/* LANGUAGE */}
+
+        <select
+
+          value={language}
+
+          onChange={(e) =>
+            setLanguage(e.target.value)
+          }
+
+          style={{
+
+            width: "100%",
+
+            padding: "15px",
+
+            borderRadius: "12px",
+
+            border:
+              "2px solid #4f46e5",
+
+            marginBottom: "20px",
+
+            fontSize: "16px",
+
+            background: "white",
+
+            color: "#111827",
+
+            cursor: "pointer",
+
+            position: "relative",
+
+            zIndex: "9999"
+          }}
+        >
+
+          <option value="Malayalam">
+            Malayalam
+          </option>
+
+          <option value="Hindi">
+            Hindi
+          </option>
+
+          <option value="Tamil">
+            Tamil
+          </option>
+
+          <option value="English">
+            English
+          </option>
+
+        </select>
+
+        {/* TEXTAREA */}
+
         <textarea
+
           rows="10"
+
           value={notes}
+
           onChange={(e) =>
             setNotes(e.target.value)
           }
 
-          placeholder="Paste your notes here..."
+          placeholder=
+            "Paste your notes here..."
 
           style={{
+
             width: "100%",
+
+            position: "relative",
+
+            zIndex: 1,
+
             padding: "18px",
+
             borderRadius: "14px",
+
             border:
               "1px solid #cbd5e1",
+
             fontSize: "16px",
+
             outline: "none",
-            boxSizing: "border-box"
+
+            boxSizing:
+              "border-box"
           }}
         />
+
+        {/* BUTTON */}
 
         <button
 
@@ -271,12 +419,17 @@ function App() {
         >
 
           {
+
             loading
+
               ? "Generating..."
+
               : "Generate"
           }
 
         </button>
+
+        {/* RESULT */}
 
         {
 
@@ -289,11 +442,14 @@ function App() {
               </h3>
 
               <p
+
                 style={{
                   lineHeight: "1.8"
                 }}
               >
+
                 {result}
+
               </p>
 
             </div>
@@ -305,25 +461,37 @@ function App() {
       {/* PRICING */}
 
       <div
+
         style={{
+
           padding: "70px 20px",
+
           textAlign: "center"
         }}
       >
 
         <h2
+
           style={{
+
             color: "#111827",
+
             fontSize: "42px"
           }}
         >
+
           Pricing
+
         </h2>
 
         <div
+
           style={{
+
             marginTop: "40px",
+
             display: "flex",
+
             justifyContent: "center"
           }}
         >
@@ -335,11 +503,14 @@ function App() {
             </h3>
 
             <h1
+
               style={{
                 color: "#4f46e5"
               }}
             >
+
               ₹99/month
+
             </h1>
 
             <p>
@@ -355,10 +526,14 @@ function App() {
             </p>
 
             <button
+
               onClick={handlePayment}
+
               style={buttonStyle}
             >
+
               Upgrade Now
+
             </button>
 
           </div>
@@ -370,10 +545,15 @@ function App() {
       {/* FOOTER */}
 
       <div
+
         style={{
+
           background: "#111827",
+
           color: "white",
+
           textAlign: "center",
+
           padding: "40px"
         }}
       >
@@ -411,9 +591,7 @@ const cardStyle = {
   boxShadow:
     "0 6px 15px rgba(0,0,0,0.08)",
 
-  color: "#111827",
-
-  transition: "0.3s"
+  color: "#111827"
 }
 
 const buttonStyle = {
