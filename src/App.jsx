@@ -187,22 +187,25 @@ if (!user) {
       <div
         style={{
           background: "white",
-          padding: "50px",
+          padding: "40px",
           borderRadius: "20px",
           textAlign: "center",
-          width: "90px",
-          maxWidth:"400px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+          width: "420px",
+          maxWidth:"90%",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.15)"
         }}
       >
         <h1
-          style={{
-            color: "#4f46e5",
-            marginBottom: "10px"
-          }}
-        >
-          StudyEasy AI 🚀
-        </h1>
+  style={{
+    fontSize: "38px",
+    fontWeight: "bold",
+    color: "#4f46e5",
+    marginBottom: "20px",
+    textAlign: "center"
+  }}
+>
+  StudyEasy AI 🚀
+</h1>
 
         <p
           style={{
