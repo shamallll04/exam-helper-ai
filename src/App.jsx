@@ -1,13 +1,57 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import {
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "firebase/auth"
+
+import {
+  auth,
+  provider
+} from "./firebase"
 
 function App() {
 
-  const [notes, setNotes] = useState("")
-  const [result, setResult] = useState("")
-  const [loading, setLoading] = useState(false)
+const [notes, setNotes] = useState("")
+const [result, setResult] = useState("")
+const [loading, setLoading] = useState(false)
 
-  const [language, setLanguage] =
-    useState("Malayalam")
+const [language, setLanguage] =
+useState("Malayalam")
+
+const [user, setUser] = useState(null)
+
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(
+    auth,
+    (currentUser) => {
+      setUser(currentUser)
+    }
+  )
+
+  return unsubscribe
+}, [])
+
+const handleLogin = async () => {
+  try {
+    await signInWithPopup(
+      auth,
+      provider
+    )
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 
   // =====================================
   // AI GENERATE
@@ -90,7 +134,7 @@ function App() {
 
       const options = {
 
-        key: "rzp_test_SvDBRnjMycTk4g",
+        key: "rzp_test_SvGqTJfJAwfo2c",
 
         amount: order.amount,
 
@@ -127,6 +171,67 @@ function App() {
       alert("Payment failed")
     }
   }
+console.log("Current user:", user)
+
+if (!user) {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(to right,#4f46e5,#7c3aed)"
+      }}
+    >
+      <div
+        style={{
+          background: "white",
+          padding: "50px",
+          borderRadius: "20px",
+          textAlign: "center",
+          width: "90px",
+          maxWidth:"400px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
+        }}
+      >
+        <h1
+          style={{
+            color: "#4f46e5",
+            marginBottom: "10px"
+          }}
+        >
+          StudyEasy AI 🚀
+        </h1>
+
+        <p
+          style={{
+            color: "#6b7280",
+            marginBottom: "30px"
+          }}
+        >
+          Sign in with Google to continue
+        </p>
+
+        <button
+          onClick={handleLogin}
+          style={{
+            background: "#4f46e5",
+            color: "white",
+            border: "none",
+            padding: "14px 28px",
+            borderRadius: "10px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer"
+          }}
+        >
+          Sign in with Google
+        </button>
+      </div>
+    </div>
+  )
+}
 
   return (
 
@@ -142,7 +247,54 @@ function App() {
 
         color: "#111827"
       }}
+    
     >
+     <div
+  style={{
+    background: "white",
+    padding: "15px 25px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
+  }}
+>
+  <div>
+    Welcome, {user?.displayName}
+  </div>
+
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "10px"
+    }}
+  >
+    <img
+      src={user?.photoURL}
+      alt="Profile"
+      style={{
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%"
+      }}
+    />
+
+    <button
+      onClick={handleLogout}
+      style={{
+        background: "#ef4444",
+        color: "white",
+        border: "none",
+        padding: "10px 20px",
+        borderRadius: "8px",
+        cursor: "pointer"
+      }}
+    >
+      Logout
+    </button>
+  </div>
+</div>
 
       {/* HERO */}
 
