@@ -8,8 +8,14 @@ import {
 
 import {
   auth,
-  provider
+  provider,
+  db
 } from "./firebase"
+
+import {
+  doc,
+  setDoc
+} from "firebase/firestore"
 
 function App() {
 
@@ -35,12 +41,30 @@ useEffect(() => {
 
 const handleLogin = async () => {
   try {
-    await signInWithPopup(
-      auth,
-      provider
+    const result = await signInWithPopup(auth, provider)
+
+    const user = result.user
+
+    console.log("Attempting Firestore save")
+
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        name: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        lastLogin: new Date().toString()
+      },
+      { merge: true }
     )
+
+    console.log("User saved to Firestore")
+
+    alert("Firestore Save Success")
+
   } catch (error) {
-    console.log(error)
+    console.log("LOGIN ERROR:", error)
+    alert(error.message)
   }
 }
 
