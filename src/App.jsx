@@ -125,7 +125,6 @@ const handleLogout = async () => {
   data.choices?.[0]?.message?.content
 )
 
-alert("Reached usage code")
 
 await setDoc(
   doc(db, "usage", user.uid),
@@ -135,7 +134,6 @@ await setDoc(
   { merge: true }
 )
 
-alert("Usage updated")
 
 console.log("Usage updated")
 
