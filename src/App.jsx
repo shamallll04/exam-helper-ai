@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import jsPDF from "jspdf"
 
 import {
   signInWithPopup,
@@ -147,6 +148,30 @@ const handleLogout = async () => {
     setLoading(false)
   }
 }
+
+// =====================
+// PDF DOWNLOAD
+// =====================
+
+const downloadPDF = () => {
+
+  const pdf = new jsPDF()
+
+  pdf.setFontSize(16)
+  pdf.text("StudyEasy AI Notes", 10, 15)
+
+  const lines = pdf.splitTextToSize(
+    result,
+    180
+  )
+
+  pdf.setFontSize(12)
+  pdf.text(lines, 10, 30)
+
+  pdf.save("StudyEasy-Notes.pdf")
+}
+
+
   // =====================================
   // PAYMENT
   // =====================================
@@ -627,6 +652,14 @@ if (!user) {
 >
   Free Uses Remaining: {5 - usageCount} / 5
 </p>
+{result && (
+  <button
+    onClick={downloadPDF}
+    style={buttonStyle}
+  >
+    Download PDF
+  </button>
+)}
 
         {/* RESULT */}
 
