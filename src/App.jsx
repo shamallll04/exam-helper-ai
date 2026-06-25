@@ -618,6 +618,10 @@ if (!user) {
             Tamil
           </option>
 
+          <option value="Arabic">
+            Arabic
+          </option>
+
           <option value="English">
             English
           </option>
