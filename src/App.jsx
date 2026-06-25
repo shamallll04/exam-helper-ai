@@ -15,7 +15,7 @@ import {
 import {
   doc,
   setDoc,
-  updateDoc,
+  getDoc,
   increment
 } from "firebase/firestore"
 
@@ -85,71 +85,65 @@ const handleLogout = async () => {
 
   const generateNotes = async () => {
 
-    if (!notes) {
-
-      alert("Please enter notes")
-
-      return
-    }
-
-    try {
-
-      setLoading(true)
-
-      const response = await fetch(
-
-        "https://exam-helper-ai-1.onrender.com/generate",
-
-        {
-
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-
-            notes,
-
-            language
-          })
-        }
-      )
-
-      const data = await response.json()
-
-      setResult(
-  data.choices?.[0]?.message?.content
-)
-
-
-await setDoc(
-  doc(db, "usage", user.uid),
-  {
-    count: increment(1)
-  },
-  { merge: true }
-)
-
-
-console.log("Usage updated")
-
-
-      setLoading(false)
-
-    } catch (error) {
-
-      console.log(error)
-
-      alert("Generation failed")
-
-      setLoading(false)
-    }
+  if (!notes) {
+    alert("Please enter notes")
+    return
   }
 
+  const usageRef = doc(db, "usage", user.uid)
+
+  const usageSnap = await getDoc(usageRef)
+
+  const count = usageSnap.data()?.count || 0
+
+  if (count >= 5) {
+    alert("Free limit reached. Upgrade to Pro.")
+    return
+  }
+
+  try {
+
+    setLoading(true)
+
+    const response = await fetch(
+      "https://exam-helper-ai-1.onrender.com/generate",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          notes,
+          language
+        })
+      }
+    )
+
+    const data = await response.json()
+
+    setResult(
+      data.choices?.[0]?.message?.content
+    )
+
+    await setDoc(
+      doc(db, "usage", user.uid),
+      {
+        count: increment(1)
+      },
+      { merge: true }
+    )
+
+    setLoading(false)
+
+  } catch (error) {
+
+    console.log(error)
+
+    alert("Generation failed")
+
+    setLoading(false)
+  }
+}
   // =====================================
   // PAYMENT
   // =====================================
