@@ -24,6 +24,7 @@ function App() {
 const [notes, setNotes] = useState("")
 const [result, setResult] = useState("")
 const [loading, setLoading] = useState(false)
+const [usageCount, setUsageCount] = useState(0)
 
 const [language, setLanguage] =
 useState("Malayalam")
@@ -95,6 +96,7 @@ const handleLogout = async () => {
   const usageSnap = await getDoc(usageRef)
 
   const count = usageSnap.data()?.count || 0
+  setUsageCount(count)
 
   if (count >= 5) {
     alert("Free limit reached. Upgrade to Pro.")
@@ -132,6 +134,7 @@ const handleLogout = async () => {
       },
       { merge: true }
     )
+    setUsageCount(count + 1)
 
     setLoading(false)
 
@@ -615,6 +618,15 @@ if (!user) {
           }
 
         </button>
+        <p
+  style={{
+    marginTop: "10px",
+    color: "#6b7280",
+    fontSize: "14px"
+  }}
+>
+  Free Uses Remaining: {5 - usageCount} / 5
+</p>
 
         {/* RESULT */}
 
