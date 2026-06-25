@@ -17,7 +17,10 @@ import {
   doc,
   setDoc,
   getDoc,
-  increment
+  getDocs,
+  increment,
+  collection,
+  addDoc
 } from "firebase/firestore"
 
 function App() {
@@ -26,6 +29,7 @@ const [notes, setNotes] = useState("")
 const [result, setResult] = useState("")
 const [loading, setLoading] = useState(false)
 const [usageCount, setUsageCount] = useState(0)
+const [history, setHistory] = useState([])
 
 const [language, setLanguage] =
 useState("Malayalam")
@@ -35,8 +39,30 @@ const [user, setUser] = useState(null)
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(
     auth,
-    (currentUser) => {
+    async (currentUser) => {
+
       setUser(currentUser)
+
+      if (currentUser) {
+
+        const historySnapshot = await getDocs(
+          collection(
+            db,
+            "users",
+            currentUser.uid,
+            "history"
+          )
+        )
+
+        const historyData = historySnapshot.docs.map(
+          doc => ({
+            id: doc.id,
+            ...doc.data()
+          })
+        )
+
+        setHistory(historyData)
+      }
     }
   )
 
@@ -127,6 +153,19 @@ const handleLogout = async () => {
     setResult(
       data.choices?.[0]?.message?.content
     )
+    console.log("Saving note to history...")
+
+    await addDoc(
+  collection(db, "users", user.uid, "history"),
+  {
+    notes,
+    result: data.choices?.[0]?.message?.content,
+    language,
+    createdAt: new Date().toISOString()
+  }
+)
+
+console.log("History saved")
 
     await setDoc(
       doc(db, "usage", user.uid),
@@ -141,13 +180,13 @@ const handleLogout = async () => {
 
   } catch (error) {
 
-    console.log(error)
+  console.error("ERROR:", error)
 
-    alert("Generation failed")
+  alert(error.message)
 
-    setLoading(false)
-  }
+  setLoading(false)
 }
+
 
 // =====================
 // PDF DOWNLOAD
@@ -876,4 +915,4 @@ const priceCard = {
   width: "320px"
 }
 
-export default App
+export default App}
