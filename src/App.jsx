@@ -14,7 +14,9 @@ import {
 
 import {
   doc,
-  setDoc
+  setDoc,
+  updateDoc,
+  increment
 } from "firebase/firestore"
 
 function App() {
@@ -120,9 +122,23 @@ const handleLogout = async () => {
       const data = await response.json()
 
       setResult(
+  data.choices?.[0]?.message?.content
+)
 
-        data.choices?.[0]?.message?.content
-      )
+alert("Reached usage code")
+
+await setDoc(
+  doc(db, "usage", user.uid),
+  {
+    count: increment(1)
+  },
+  { merge: true }
+)
+
+alert("Usage updated")
+
+console.log("Usage updated")
+
 
       setLoading(false)
 
