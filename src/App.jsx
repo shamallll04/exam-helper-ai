@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import jsPDF from "jspdf"
+import html2pdf from "html2pdf.js"
 
 import {
   signInWithPopup,
@@ -616,10 +616,6 @@ if (!user) {
 
           <option value="Tamil">
             Tamil
-          </option>
-
-          <option value="Arabic">
-            Arabic
           </option>
 
           <option value="English">

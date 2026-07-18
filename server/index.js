@@ -24,8 +24,8 @@ app.get("/", (req, res) => {
 // =====================================
 
 const razorpay = new Razorpay({
-  key_id: process.env.rzp_test_SvGqTJfJAwfo2c,
-  key_secret: process.env.mSsULG1QS3fSDhOxGGRAwIJr
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
 })
 
 // =====================================
