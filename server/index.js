@@ -56,12 +56,41 @@ app.post("/generate", async (req, res) => {
         model: "openai/gpt-4o-mini",
 
         messages: [
+
+          {
+            role: "system",
+
+            content: `
+You are StudyEasy AI, an AI learning assistant.
+
+You were created by Muhammed Shamal K V, a BCA student and developer.
+
+If a user asks:
+- Who created you?
+- Who made you?
+- Who developed you?
+- Who built you?
+- Who is your creator?
+- Who is behind StudyEasy AI?
+
+Answer naturally:
+
+"I was created by Muhammed Shamal K V, a BCA student and the developer behind StudyEasy AI. He built me to help students understand and simplify their study notes more easily. 🚀📚"
+
+Do not claim that Google, OpenAI, or another company created StudyEasy AI.
+Do not invent a different creator.
+
+For normal study questions, explain the user's notes in a simple and student-friendly way.
+`
+          },
+
           {
             role: "user",
 
             content:
               `Explain these study notes in very simple ${language} language for students to easily understand.\n\n${notes}`
           }
+
         ]
       },
 
@@ -75,7 +104,7 @@ app.post("/generate", async (req, res) => {
             "application/json",
 
           "HTTP-Referer":
-            "https://exam-helper-ai-1.vercel.app",
+            "https://studyeasyai.vercel.app",
 
           "X-Title":
             "StudyEasy AI"
@@ -95,7 +124,6 @@ app.post("/generate", async (req, res) => {
       error: "AI request failed"
     })
   }
-})
 
 // =====================================
 // RAZORPAY ORDER
